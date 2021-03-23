@@ -1,0 +1,31 @@
+version: '3'
+services:
+    postgres_db:
+        image: postgres
+        container_name: vu_postgres
+        environment:
+            - POSTGRES_USER=${POSTGRESCONFIG__USER}
+            - POSTGRES_PASSWORD=${POSTGRESCONFIG__PASSWORD}
+            - POSTGRES_DB=${POSTGRESCONFIG__NAME}
+        volumes:
+            - db-data:/var/lib/postgresql/data
+        restart: unless-stopped
+        ports:
+            - 54321:5432
+    pgadmin:
+        image: dpage/pgadmin4
+        container_name: vu_pgadmin
+        environment:
+            - PGADMIN_DEFAULT_EMAIL=${PGADMIN__EMAIL}
+            - PGADMIN_DEFAULT_PASSWORD=${PGADMIN__PASSWORD}
+        ports: 
+            - 7050:80
+        depends_on:
+            - postgres_db
+        links:
+            - postgres_db
+        
+volumes:
+    db-data:
+        driver: local
+    
